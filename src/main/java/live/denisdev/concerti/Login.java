@@ -17,6 +17,7 @@ public class Login {
     private TextField email;
     @FXML
     private PasswordField psw;
+
     @FXML
     protected void login() throws IOException {
         if (email.getText().equals("karajedenis@concerti.it") && psw.getText().equals("karaje")) {
@@ -34,6 +35,8 @@ public class Login {
             stage.setScene(scene);
             stage.setResizable(false);
             stage.show();
+            email.clear();
+            psw.clear();
         } else {
             Stage stage = new Stage();
             FXMLLoader fxmlLoader = new FXMLLoader(Start.class.getResource("utente.fxml"));
@@ -49,6 +52,8 @@ public class Login {
             stage.setScene(scene);
             stage.setResizable(false);
             stage.show();
+            email.clear();
+            psw.clear();
         }
     }
 }

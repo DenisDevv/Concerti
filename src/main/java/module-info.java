@@ -4,6 +4,7 @@ module live.denisdev.concerti {
 
     requires org.controlsfx.controls;
     requires org.kordamp.ikonli.javafx;
+    requires java.sql;
 
     opens live.denisdev.concerti to javafx.fxml;
     exports live.denisdev.concerti;

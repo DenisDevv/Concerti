@@ -7,6 +7,9 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.Statement;
 import java.util.Objects;
 
 public class Start extends Application {
@@ -26,8 +29,24 @@ public class Start extends Application {
         stage.setResizable(false);
         stage.show();
     }
-
+    public static void createDatabase() {
+        try (Connection conn = DriverManager.getConnection("jdbc:sqlite:localdata.db")) {
+            if (conn != null) {
+                Statement stmt = conn.createStatement();
+                String createTableSQL = "CREATE TABLE IF NOT EXISTS concertos ("
+                        + "artista TEXT NOT NULL, "
+                        + "luogo TEXT NOT NULL, "
+                        + "data TEXT NOT NULL, "
+                        + "prezzo REAL NOT NULL, "
+                        + "concertoInternazionale BOOLEAN NOT NULL)";
+                stmt.execute(createTableSQL);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     public static void main(String[] args) {
         launch();
+        createDatabase();
     }
 }

@@ -15,6 +15,10 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import org.kordamp.ikonli.javafx.FontIcon;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.Objects;
 
 public class Staff {
@@ -56,6 +60,27 @@ public class Staff {
     @FXML
     private Pane crea;
     private Concerto concertoSelezionato;
+    private static final String DB_URL = "jdbc:sqlite:localdata.db";
+    String sql = "INSERT INTO concertos (artista, luogo, data, prezzo, concertoInternazionale) VALUES (?, ?, ?, ?, ?)";
+
+        try (
+    Connection conn = DriverManager.getConnection(DB_URL);
+    PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+        pstmt.setString(1, artista);
+        pstmt.setString(2, luogo);
+        pstmt.setString(3, data);
+        pstmt.setDouble(4, prezzo);
+        pstmt.setBoolean(5, concertoInternazionale);
+        pstmt.executeUpdate();
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+
+    public Staff() throws SQLException {
+    }
+}
     @FXML
     protected void initialize() {
         Image im = new Image(Objects.requireNonNull(Start.class.getResourceAsStream("/live/denisdev/concerti/imgs/icon512.png")));
