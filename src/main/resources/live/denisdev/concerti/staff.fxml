@@ -39,7 +39,7 @@
             <Font name="Arial Black" size="38.0" />
          </font>
       </Label>
-      <ListView fx:id="lista" layoutX="189.0" layoutY="164.0" prefHeight="372.0" prefWidth="522.0" style="-fx-background-color: #27003e; -fx-background-radius: 10px;" />
+      <ListView fx:id="lista" layoutX="189.0" layoutY="164.0" prefHeight="372.0" prefWidth="522.0" style="-fx-background-color: #27003e; -fx-background-radius: 10px;" onMouseClicked="#selezione" />
       <Pane fx:id="crea" layoutX="88.0" layoutY="107.0" prefHeight="575.0" prefWidth="725.0" style="-fx-background-color: #5d098e; -fx-background-radius: 20px;" visible="false">
          <children>
             <VBox layoutX="256.0" layoutY="108.0" prefHeight="359.0" prefWidth="213.0" spacing="20.0">

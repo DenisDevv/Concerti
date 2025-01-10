@@ -8,6 +8,7 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
@@ -54,6 +55,7 @@ public class Staff {
     private ListView<Concerto> lista;
     @FXML
     private Pane crea;
+    private Concerto concertoSelezionato;
     @FXML
     protected void initialize() {
         Image im = new Image(Objects.requireNonNull(Start.class.getResourceAsStream("/live/denisdev/concerti/imgs/icon512.png")));
@@ -62,6 +64,9 @@ public class Staff {
         mod.setGraphic(new FontIcon("fas-edit"));
         elim.setGraphic(new FontIcon("fas-trash"));
         lista.setItems(listaConcerti.getConcerti());
+        lista.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+            selezione();
+        });
     }
     @FXML
     protected void nuovo(){
@@ -79,33 +84,34 @@ public class Staff {
         pulisciInput();
     }
     @FXML
-    protected void mod() {
-        // Concerto c = lista.getSelectionModel().getSelectedItem();
-        System.out.println(lista.getSelectionModel().getSelectedItem());
-        /* if (c != null) {
-            art1.setText(c.getArtista());
-            luo1.setText(c.getLuogo());
-            dat1.setText(c.getData());
-            prez1.setText(c.getPrezzo().toString());
-            if (c instanceof ConcertoNazionale) {
+    protected void modifica() {
+        if (concertoSelezionato != null) {
+            art1.setText(concertoSelezionato.getArtista());
+            luo1.setText(concertoSelezionato.getLuogo());
+            dat1.setText(concertoSelezionato.getData());
+            prez1.setText(concertoSelezionato.getPrezzo().toString());
+            if (concertoSelezionato instanceof ConcertoNazionale) {
                 nazio1.setSelected(true);
             } else {
                 inte1.setSelected(true);
             }
-            listaConcerti.rimConcerto(lista.getSelectionModel().getSelectedIndex());
+            listaConcerti.rimConcerto(concertoSelezionato);
             modi.setVisible(true);
         }
-         */
     }
     @FXML
-    protected void modifica() {
-        listaConcerti.modConcerto(lista.getSelectionModel().getSelectedIndex(), art1.getText(), luo1.getText(), dat1.getText(), Double.parseDouble(prez1.getText()), nazio1.isSelected());
+    protected void selezione() {
+        concertoSelezionato = lista.getSelectionModel().getSelectedItem();
+    }
+    @FXML
+    protected void mod() {
+        listaConcerti.modConcerto(art1.getText(), luo1.getText(), dat1.getText(), Double.parseDouble(prez1.getText()), nazio1.isSelected());
         lista.setItems(listaConcerti.getConcerti());
         modi.setVisible(false);
     }
     @FXML
     protected void elimina() {
-        listaConcerti.rimConcerto(lista.getSelectionModel().getSelectedIndex());
+        listaConcerti.rimConcerto(concertoSelezionato);
         lista.setItems(listaConcerti.getConcerti());
     }
     private void pulisciInput() {

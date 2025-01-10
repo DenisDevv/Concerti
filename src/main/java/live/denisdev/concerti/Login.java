@@ -20,7 +20,6 @@ public class Login {
     @FXML
     protected void login() throws IOException {
         if (email.getText().equals("karajedenis@concerti.it") && psw.getText().equals("karaje")) {
-            email.getScene().getWindow().hide();
             Stage stage = new Stage();
             FXMLLoader fxmlLoader = new FXMLLoader(Start.class.getResource("staff.fxml"));
             Scene scene = new Scene(fxmlLoader.load(), 900, 700);
@@ -36,7 +35,6 @@ public class Login {
             stage.setResizable(false);
             stage.show();
         } else {
-            email.getScene().getWindow().hide();
             Stage stage = new Stage();
             FXMLLoader fxmlLoader = new FXMLLoader(Start.class.getResource("utente.fxml"));
             Scene scene = new Scene(fxmlLoader.load(), 600, 400);

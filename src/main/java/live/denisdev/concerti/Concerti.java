@@ -20,10 +20,10 @@ public class Concerti {
         return FXCollections.observableArrayList(concerti);
     }
 
-    public void rimConcerto(int index) {
+    public void rimConcerto(Concerto index) {
         concerti.remove(index);
     }
-    public void modConcerto(int index, String artista, String luogo, String data, Double prezzo, boolean nazionale) {
-        concerti.set(index, nazionale ? new ConcertoNazionale(artista, luogo, data, prezzo) : new ConcertoInternazionale(artista, luogo, data, prezzo));
+    public void modConcerto(String artista, String luogo, String data, Double prezzo, boolean nazionale) {
+        concerti.add(nazionale ? new ConcertoNazionale(artista, luogo, data, prezzo) : new ConcertoInternazionale(artista, luogo, data, prezzo));
     }
 }
