@@ -40,7 +40,7 @@ public class Login {
         } else {
             Stage stage = new Stage();
             FXMLLoader fxmlLoader = new FXMLLoader(Start.class.getResource("utente.fxml"));
-            Scene scene = new Scene(fxmlLoader.load(), 600, 400);
+            Scene scene = new Scene(fxmlLoader.load(), 900, 700);
             stage.getIcons().add(new Image(Objects.requireNonNull(Start.class.getResourceAsStream("/live/denisdev/concerti/imgs/icon16.png"))));
             stage.getIcons().add(new Image(Objects.requireNonNull(Start.class.getResourceAsStream("/live/denisdev/concerti/imgs/icon32.png"))));
             stage.getIcons().add(new Image(Objects.requireNonNull(Start.class.getResourceAsStream("/live/denisdev/concerti/imgs/icon48.png"))));

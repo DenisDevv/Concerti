@@ -59,28 +59,17 @@ public class Staff {
     private ListView<Concerto> lista;
     @FXML
     private Pane crea;
+    @FXML
+    private Pane conferma;
+    @FXML
+    private Button si;
+    @FXML
+    private Button no;
     private Concerto concertoSelezionato;
-    private static final String DB_URL = "jdbc:sqlite:localdata.db";
-    String sql = "INSERT INTO concertos (artista, luogo, data, prezzo, concertoInternazionale) VALUES (?, ?, ?, ?, ?)";
-
-        try (
-    Connection conn = DriverManager.getConnection(DB_URL);
-    PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-        pstmt.setString(1, artista);
-        pstmt.setString(2, luogo);
-        pstmt.setString(3, data);
-        pstmt.setDouble(4, prezzo);
-        pstmt.setBoolean(5, concertoInternazionale);
-        pstmt.executeUpdate();
-
-    } catch (SQLException e) {
-        e.printStackTrace();
+    public void setConcerti(Concerti concerti) {
+        this.listaConcerti = concerti;
+        lista.setItems(listaConcerti.getConcerti());
     }
-
-    public Staff() throws SQLException {
-    }
-}
     @FXML
     protected void initialize() {
         Image im = new Image(Objects.requireNonNull(Start.class.getResourceAsStream("/live/denisdev/concerti/imgs/icon512.png")));
@@ -88,6 +77,8 @@ public class Staff {
         nuovo.setGraphic(new FontIcon("fas-plus"));
         mod.setGraphic(new FontIcon("fas-edit"));
         elim.setGraphic(new FontIcon("fas-trash"));
+        si.setGraphic(new FontIcon("fas-check"));
+        no.setGraphic(new FontIcon("fas-times"));
         lista.setItems(listaConcerti.getConcerti());
         lista.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
             selezione();
@@ -101,8 +92,10 @@ public class Staff {
     protected void crea() {
         if (nazio.isSelected()) {
             listaConcerti.addNazionale(art.getText(), luo.getText(), dat.getText(), Double.parseDouble(prez.getText()));
+            Concerti.insertConcerto(art.getText(), luo.getText(), dat.getText(), Double.parseDouble(prez.getText()), false);
         } else {
             listaConcerti.addInternazionale(art.getText(), luo.getText(), dat.getText(), Double.parseDouble(prez.getText()));
+            Concerti.insertConcerto(art.getText(), luo.getText(), dat.getText(), Double.parseDouble(prez.getText()), true);
         }
         lista.setItems(listaConcerti.getConcerti());
         crea.setVisible(false);
@@ -121,6 +114,7 @@ public class Staff {
                 inte1.setSelected(true);
             }
             listaConcerti.rimConcerto(concertoSelezionato);
+            Concerti.deleteConcerto(concertoSelezionato);
             modi.setVisible(true);
         }
     }
@@ -131,13 +125,16 @@ public class Staff {
     @FXML
     protected void mod() {
         listaConcerti.modConcerto(art1.getText(), luo1.getText(), dat1.getText(), Double.parseDouble(prez1.getText()), nazio1.isSelected());
+        Concerti.insertConcerto(art1.getText(), luo1.getText(), dat1.getText(), Double.parseDouble(prez1.getText()), !nazio1.isSelected());
         lista.setItems(listaConcerti.getConcerti());
         modi.setVisible(false);
     }
     @FXML
     protected void elimina() {
         listaConcerti.rimConcerto(concertoSelezionato);
+        Concerti.deleteConcerto(concertoSelezionato);
         lista.setItems(listaConcerti.getConcerti());
+        closeConferma();
     }
     private void pulisciInput() {
         art.clear();
@@ -145,5 +142,13 @@ public class Staff {
         dat.clear();
         prez.clear();
         nazio.setSelected(false);
+    }
+    @FXML
+    protected void confermaEliminazione() {
+        conferma.setVisible(true);
+    }
+    @FXML
+    protected void closeConferma() {
+        conferma.setVisible(false);
     }
 }

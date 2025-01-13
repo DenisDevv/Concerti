@@ -30,10 +30,10 @@ public class Start extends Application {
         stage.show();
     }
     public static void createDatabase() {
-        try (Connection conn = DriverManager.getConnection("jdbc:sqlite:localdata.db")) {
+        try (Connection conn = DriverManager.getConnection("jdbc:sqlite:concerti.db")) {
             if (conn != null) {
                 Statement stmt = conn.createStatement();
-                String createTableSQL = "CREATE TABLE IF NOT EXISTS concertos ("
+                String createTableSQL = "CREATE TABLE IF NOT EXISTS concerto ("
                         + "artista TEXT NOT NULL, "
                         + "luogo TEXT NOT NULL, "
                         + "data TEXT NOT NULL, "
