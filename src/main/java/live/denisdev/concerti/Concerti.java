@@ -59,7 +59,7 @@ public class Concerti {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        System.out.println("Concerto inserito" + artista + " " + luogo + " " + data + " " + prezzo + " " + concertoInternazionale);
+        System.out.println("Concerto inserito: " + artista + " " + luogo + " " + data + " " + prezzo + " " + concertoInternazionale);
     }
     private void loadConcertiFromDatabase() {
         try (Connection conn = DriverManager.getConnection(DB_URL)) {
@@ -98,7 +98,7 @@ public class Concerti {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        System.out.println("Concerto eliminato" + concerto.getArtista() + " " + concerto.getLuogo() + " " + concerto.getData() + " " + concerto.getPrezzo() + " " + (concerto instanceof ConcertoInternazionale));
+        System.out.println("Concerto eliminato: " + concerto.getArtista() + " " + concerto.getLuogo() + " " + concerto.getData() + " " + concerto.getPrezzo() + " " + (concerto instanceof ConcertoInternazionale));
     }
     public static void createDatabase() {
         try (Connection conn = DriverManager.getConnection(DB_URL)) {
