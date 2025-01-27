@@ -3,6 +3,7 @@ package live.denisdev.concerti;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -17,7 +18,18 @@ public class Login {
     private TextField email;
     @FXML
     private PasswordField psw;
-
+    @FXML
+    private Button login;
+    @FXML
+    protected void initialize() {
+        login.addEventHandler(, e -> {
+            try {
+                login();
+            } catch (IOException ioException) {
+                Logger.log(ioException.getMessage(), true);
+            }
+        });
+    }
     @FXML
     protected void login() throws IOException {
         if (email.getText().equals("karajedenis@concerti.it") && psw.getText().equals("karaje")) {

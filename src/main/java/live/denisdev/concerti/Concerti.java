@@ -12,10 +12,7 @@ public class Concerti {
     public Concerti() {
         createDatabase();
         loadConcertiFromDatabase();
-        System.out.println("DB Caricato");
-        for (Concerto c : concerti) {
-            System.out.println(c.getArtista() + " " + c.getLuogo() + " " + c.getData() + " " + c.getPrezzo());
-        }
+        Logger.log("DB Caricato", false);
     }
     public void addNazionale(String artista, String luogo, String data, Double prezzo) {
         concerti.add(new ConcertoNazionale(artista, luogo, data, prezzo));
@@ -29,6 +26,9 @@ public class Concerti {
         return FXCollections.observableArrayList(concerti);
     }
     public ObservableList<Concerto> getConcerti(String luogo) {
+        if (luogo.equals("")) {
+            return getConcerti();
+        }
         ArrayList<Concerto> concertiFiltrati = new ArrayList<>();
         for (Concerto c : concerti) {
             if (c.getLuogo().equals(luogo)) {
@@ -59,7 +59,7 @@ public class Concerti {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        System.out.println("Concerto inserito: " + artista + " " + luogo + " " + data + " " + prezzo + " " + concertoInternazionale);
+        Logger.log("Concerto inserito: " + artista + " " + luogo + " " + data + " " + prezzo + " " + concertoInternazionale, false);
     }
     private void loadConcertiFromDatabase() {
         try (Connection conn = DriverManager.getConnection(DB_URL)) {
@@ -83,6 +83,9 @@ public class Concerti {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        for (Concerto c : concerti) {
+            Logger.log(c.getArtista() + " " + c.getLuogo() + " " + c.getData() + " " + c.getPrezzo(), false);
+        }
     }
     public static void deleteConcerto(Concerto concerto) {
         String sql = "DELETE FROM concerto WHERE artista = ? AND luogo = ? AND data = ? AND prezzo = ? AND concertoInternazionale = ?";
@@ -98,7 +101,7 @@ public class Concerti {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        System.out.println("Concerto eliminato: " + concerto.getArtista() + " " + concerto.getLuogo() + " " + concerto.getData() + " " + concerto.getPrezzo() + " " + (concerto instanceof ConcertoInternazionale));
+        Logger.log("Concerto eliminato: " + concerto.getArtista() + " " + concerto.getLuogo() + " " + concerto.getData() + " " + concerto.getPrezzo() + " " + (concerto instanceof ConcertoInternazionale), true);
     }
     public static void createDatabase() {
         try (Connection conn = DriverManager.getConnection(DB_URL)) {

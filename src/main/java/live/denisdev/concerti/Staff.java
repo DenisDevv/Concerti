@@ -1,24 +1,15 @@
 package live.denisdev.concerti;
 
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TextField;
-import javafx.scene.effect.DropShadow;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import org.kordamp.ikonli.javafx.FontIcon;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.Objects;
 
 public class Staff {
@@ -27,7 +18,7 @@ public class Staff {
     @FXML
     private TextField luo;
     @FXML
-    private TextField dat;
+    private DatePicker dat;
     @FXML
     private TextField prez;
     @FXML
@@ -39,7 +30,7 @@ public class Staff {
     @FXML
     private TextField luo1;
     @FXML
-    private TextField dat1;
+    private DatePicker dat1;
     @FXML
     private TextField prez1;
     @FXML
@@ -65,6 +56,8 @@ public class Staff {
     private Button si;
     @FXML
     private Button no;
+    @FXML
+    private Label errore;
     private Concerto concertoSelezionato;
     public void setConcerti(Concerti concerti) {
         this.listaConcerti = concerti;
@@ -80,9 +73,7 @@ public class Staff {
         si.setGraphic(new FontIcon("fas-check"));
         no.setGraphic(new FontIcon("fas-times"));
         lista.setItems(listaConcerti.getConcerti());
-        lista.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
-            selezione();
-        });
+        lista.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> selezione());
     }
     @FXML
     protected void nuovo(){
@@ -93,48 +84,45 @@ public class Staff {
         try {
             checkValues();
         } catch (IllegalArgumentException e) {
-            System.err.println(e.getMessage());
+            errore.setText(e.getMessage());
             return;
         }
         if (nazio.isSelected()) {
-            listaConcerti.addNazionale(art.getText(), luo.getText(), dat.getText(), Double.parseDouble(prez.getText()));
-            Concerti.insertConcerto(art.getText(), luo.getText(), dat.getText(), Double.parseDouble(prez.getText()), false);
+            listaConcerti.addNazionale(art.getText(), luo.getText(), dat.getValue().toString(), Double.parseDouble(prez.getText()));
+            Concerti.insertConcerto(art.getText(), luo.getText(), dat.getValue().toString(), Double.parseDouble(prez.getText()), false);
         } else {
-            listaConcerti.addInternazionale(art.getText(), luo.getText(), dat.getText(), Double.parseDouble(prez.getText()));
-            Concerti.insertConcerto(art.getText(), luo.getText(), dat.getText(), Double.parseDouble(prez.getText()), true);
+            listaConcerti.addInternazionale(art.getText(), luo.getText(), dat.getValue().toString(), Double.parseDouble(prez.getText()));
+            Concerti.insertConcerto(art.getText(), luo.getText(), dat.getValue().toString(), Double.parseDouble(prez.getText()), true);
         }
         lista.setItems(listaConcerti.getConcerti());
         crea.setVisible(false);
         pulisciInput();
     }
-    protected void checkValues() {
-        if (art.getText() == null || luo.getText() == null || dat.getText() == null || prez.getText() == null || art.getText().isEmpty() || luo.getText().isEmpty() || dat.getText().isEmpty() || prez.getText().isEmpty()) {
+    protected void checkValues() throws IllegalArgumentException {
+        if (art.getText() == null || luo.getText() == null || dat.getValue() == null || prez.getText() == null || art.getText().isEmpty() || luo.getText().isEmpty() || prez.getText().isEmpty()) {
             throw new IllegalArgumentException("Tutti i campi sono obbligatori");
         }
-        if (listaConcerti.getConcerti().stream().anyMatch(c -> c.getArtista().equals(art.getText()) && c.getLuogo().equals(luo.getText()) && c.getData().equals(dat.getText()))) {
+        if (listaConcerti.getConcerti().stream().anyMatch(c -> c.getArtista().equals(art.getText()) && c.getLuogo().equals(luo.getText()) && c.getData().equals(dat.getValue().toString()))) {
             throw new IllegalArgumentException("Concerto già presente");
         }
     }
-    protected void checkValues2() {
-        if (art1.getText() == null || luo1.getText() == null || dat1.getText() == null || prez1.getText() == null || art1.getText().isEmpty() || luo1.getText().isEmpty() || dat1.getText().isEmpty() || prez1.getText().isEmpty()) {
+    protected void checkValues2() throws IllegalArgumentException{
+        if (art1.getText() == null || luo1.getText() == null || dat1.getValue() == null || prez1.getText() == null || art1.getText().isEmpty() || luo1.getText().isEmpty() || dat1.getValue().toString().isEmpty() || prez1.getText().isEmpty()) {
             throw new IllegalArgumentException("Tutti i campi sono obbligatori");
         }
-        if (listaConcerti.getConcerti().stream().anyMatch(c -> c.getArtista().equals(art1.getText()) && c.getLuogo().equals(luo1.getText()) && c.getData().equals(dat1.getText())) && !concertoSelezionato.getArtista().equals(art1.getText()) && !concertoSelezionato.getLuogo().equals(luo1.getText()) && !concertoSelezionato.getData().equals(dat1.getText())) {
+        if (listaConcerti.getConcerti().stream().anyMatch(c -> c.getArtista().equals(art1.getText()) && c.getLuogo().equals(luo1.getText()) && c.getData().equals(dat1.getValue().toString())) && !concertoSelezionato.getArtista().equals(art1.getText()) && !concertoSelezionato.getLuogo().equals(luo1.getText()) && !concertoSelezionato.getData().equals(dat1.getValue().toString())) {
             throw new IllegalArgumentException("Concerto già presente");
         }
     }
     @FXML
     protected void modifica() {
-        try {
-            checkValues2();
-        } catch (IllegalArgumentException e) {
-            System.err.println(e.getMessage());
-            return;
-        }
         if (concertoSelezionato != null) {
             art1.setText(concertoSelezionato.getArtista());
             luo1.setText(concertoSelezionato.getLuogo());
-            dat1.setText(concertoSelezionato.getData());
+            int d = Integer.parseInt(concertoSelezionato.getData().split("-")[2]);
+            int m = Integer.parseInt(concertoSelezionato.getData().split("-")[1]);
+            int y = Integer.parseInt(concertoSelezionato.getData().split("-")[0]);
+            dat1.setValue(LocalDate.of(y, m, d));
             prez1.setText(concertoSelezionato.getPrezzo().toString());
             if (concertoSelezionato instanceof ConcertoNazionale) {
                 nazio1.setSelected(true);
@@ -152,10 +140,17 @@ public class Staff {
     }
     @FXML
     protected void mod() {
-        listaConcerti.modConcerto(art1.getText(), luo1.getText(), dat1.getText(), Double.parseDouble(prez1.getText()), nazio1.isSelected());
-        Concerti.insertConcerto(art1.getText(), luo1.getText(), dat1.getText(), Double.parseDouble(prez1.getText()), !nazio1.isSelected());
+        try {
+            checkValues2();
+        } catch (IllegalArgumentException e) {
+            errore.setText(e.getMessage());
+            return;
+        }
+        listaConcerti.modConcerto(art1.getText(), luo1.getText(), dat1.getValue().toString(), Double.parseDouble(prez1.getText()), nazio1.isSelected());
+        Concerti.insertConcerto(art1.getText(), luo1.getText(), dat1.getValue().toString(), Double.parseDouble(prez1.getText()), !nazio1.isSelected());
         lista.setItems(listaConcerti.getConcerti());
         modi.setVisible(false);
+        pulisciInput();
     }
     @FXML
     protected void elimina() {
@@ -167,9 +162,10 @@ public class Staff {
     private void pulisciInput() {
         art.clear();
         luo.clear();
-        dat.clear();
+        dat.setValue(null);
         prez.clear();
         nazio.setSelected(false);
+        errore.setText("");
     }
     @FXML
     protected void confermaEliminazione() {
