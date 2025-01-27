@@ -90,6 +90,12 @@ public class Staff {
     }
     @FXML
     protected void crea() {
+        try {
+            checkValues();
+        } catch (IllegalArgumentException e) {
+            System.err.println(e.getMessage());
+            return;
+        }
         if (nazio.isSelected()) {
             listaConcerti.addNazionale(art.getText(), luo.getText(), dat.getText(), Double.parseDouble(prez.getText()));
             Concerti.insertConcerto(art.getText(), luo.getText(), dat.getText(), Double.parseDouble(prez.getText()), false);
@@ -100,6 +106,14 @@ public class Staff {
         lista.setItems(listaConcerti.getConcerti());
         crea.setVisible(false);
         pulisciInput();
+    }
+    protected void checkValues() {
+        if (art.getText() == null || luo.getText() == null || dat.getText() == null || prez.getText() == null || art.getText().isEmpty() || luo.getText().isEmpty() || dat.getText().isEmpty() || prez.getText().isEmpty()) {
+            throw new IllegalArgumentException("Tutti i campi sono obbligatori");
+        }
+        if (listaConcerti.getConcerti().stream().anyMatch(c -> c.getArtista().equals(art.getText()) && c.getLuogo().equals(luo.getText()) && c.getData().equals(dat.getText()))) {
+            throw new IllegalArgumentException("Concerto già presente");
+        }
     }
     @FXML
     protected void modifica() {
