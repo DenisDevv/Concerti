@@ -22,11 +22,13 @@ public class Login {
     private Button login;
     @FXML
     protected void initialize() {
-        login.addEventHandler(, e -> {
-            try {
-                login();
-            } catch (IOException ioException) {
-                Logger.log(ioException.getMessage(), true);
+        login.addEventHandler(javafx.scene.input.KeyEvent.KEY_PRESSED, e -> {
+            if (e.getCode().toString().equals("ENTER")) {
+                try {
+                    login();
+                } catch (IOException ioException) {
+                    Logger.log(ioException.getMessage(), true);
+                }
             }
         });
     }
