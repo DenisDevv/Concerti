@@ -115,8 +115,22 @@ public class Staff {
             throw new IllegalArgumentException("Concerto già presente");
         }
     }
+    protected void checkValues2() {
+        if (art1.getText() == null || luo1.getText() == null || dat1.getText() == null || prez1.getText() == null || art1.getText().isEmpty() || luo1.getText().isEmpty() || dat1.getText().isEmpty() || prez1.getText().isEmpty()) {
+            throw new IllegalArgumentException("Tutti i campi sono obbligatori");
+        }
+        if (listaConcerti.getConcerti().stream().anyMatch(c -> c.getArtista().equals(art1.getText()) && c.getLuogo().equals(luo1.getText()) && c.getData().equals(dat1.getText())) && !concertoSelezionato.getArtista().equals(art1.getText()) && !concertoSelezionato.getLuogo().equals(luo1.getText()) && !concertoSelezionato.getData().equals(dat1.getText())) {
+            throw new IllegalArgumentException("Concerto già presente");
+        }
+    }
     @FXML
     protected void modifica() {
+        try {
+            checkValues2();
+        } catch (IllegalArgumentException e) {
+            System.err.println(e.getMessage());
+            return;
+        }
         if (concertoSelezionato != null) {
             art1.setText(concertoSelezionato.getArtista());
             luo1.setText(concertoSelezionato.getLuogo());
