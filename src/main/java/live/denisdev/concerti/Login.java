@@ -22,7 +22,7 @@ public class Login {
     private Button login;
     @FXML
     protected void initialize() {
-        login.addEventHandler(javafx.scene.input.KeyEvent.KEY_PRESSED, e -> {
+        psw.addEventHandler(javafx.scene.input.KeyEvent.KEY_PRESSED, e -> {
             if (e.getCode().toString().equals("ENTER")) {
                 try {
                     login();
